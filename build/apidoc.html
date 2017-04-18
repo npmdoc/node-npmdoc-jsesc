@@ -1,0 +1,310 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://mths.be/jsesc"
+
+    >jsesc (v2.5.0)</a>
+</h1>
+<h4>Given some data, jsesc returns the shortest possible stringified & ASCII-safe representation of that data.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.jsesc">module jsesc</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsesc.jsesc">
+            function <span class="apidocSignatureSpan"></span>jsesc
+            <span class="apidocSignatureSpan">(argument, options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsesc.toString">
+            function <span class="apidocSignatureSpan">jsesc.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">string <span class="apidocSignatureSpan">jsesc.</span>version</span>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.jsesc" id="apidoc.module.jsesc">module jsesc</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.jsesc.jsesc" id="apidoc.element.jsesc.jsesc">
+        function <span class="apidocSignatureSpan"></span>jsesc
+        <span class="apidocSignatureSpan">(argument, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">jsesc = function (argument, options) {
+	const increaseIndentation = function() {
+		oldIndent = indent;
+		++options.indentLevel;
+		indent = options.indent.repeat(options.indentLevel)
+	};
+	// Handle options
+	const defaults = {
+		&#x27;escapeEverything&#x27;: false,
+		&#x27;minimal&#x27;: false,
+		&#x27;isScriptContext&#x27;: false,
+		&#x27;quotes&#x27;: &#x27;single&#x27;,
+		&#x27;wrap&#x27;: false,
+		&#x27;es6&#x27;: false,
+		&#x27;json&#x27;: false,
+		&#x27;compact&#x27;: true,
+		&#x27;lowercaseHex&#x27;: false,
+		&#x27;numbers&#x27;: &#x27;decimal&#x27;,
+		&#x27;indent&#x27;: &#x27;\t&#x27;,
+		&#x27;indentLevel&#x27;: 0,
+		&#x27;__inline1__&#x27;: false,
+		&#x27;__inline2__&#x27;: false
+	};
+	const json = options &#x26;&#x26; options.json;
+	if (json) {
+		defaults.quotes = &#x27;double&#x27;;
+		defaults.wrap = true;
+	}
+	options = extend(defaults, options);
+	if (
+		options.quotes != &#x27;single&#x27; &#x26;&#x26;
+		options.quotes != &#x27;double&#x27; &#x26;&#x26;
+		options.quotes != &#x27;backtick&#x27;
+	) {
+		options.quotes = &#x27;single&#x27;;
+	}
+	const quote = options.quotes == &#x27;double&#x27; ?
+		&#x27;&#x22;&#x27; :
+		(options.quotes == &#x27;backtick&#x27; ?
+			&#x27;`&#x27; :
+			&#x27;\&#x27;&#x27;
+		);
+	const compact = options.compact;
+	const lowercaseHex = options.lowercaseHex;
+	let indent = options.indent.repeat(options.indentLevel);
+	let oldIndent = &#x27;&#x27;;
+	const inline1 = options.__inline1__;
+	const inline2 = options.__inline2__;
+	const newLine = compact ? &#x27;&#x27; : &#x27;\n&#x27;;
+	let result;
+	let isEmpty = true;
+	const useBinNumbers = options.numbers == &#x27;binary&#x27;;
+	const useOctNumbers = options.numbers == &#x27;octal&#x27;;
+	const useDecNumbers = options.numbers == &#x27;decimal&#x27;;
+	const useHexNumbers = options.numbers == &#x27;hexadecimal&#x27;;
+
+	if (json &#x26;&#x26; argument &#x26;&#x26; isFunction(argument.toJSON)) {
+		argument = argument.toJSON();
+	}
+
+	if (!isString(argument)) {
+		if (isMap(argument)) {
+			if (argument.size == 0) {
+				return &#x27;new Map()&#x27;;
+			}
+			if (!compact) {
+				options.__inline1__ = true;
+				options.__inline2__ = false;
+			}
+			return &#x27;new Map(&#x27; + jsesc(Array.from(argument), options) + &#x27;)&#x27;;
+		}
+		if (isSet(argument)) {
+			if (argument.size == 0) {
+				return &#x27;new Set()&#x27;;
+			}
+			return &#x27;new Set(&#x27; + jsesc(Array.from(argument), options) + &#x27;)&#x27;;
+		}
+		if (isBuffer(argument)) {
+			if (argument.length == 0) {
+				return &#x27;Buffer()&#x27;;
+			}
+			return &#x27;Buffer(&#x27; + jsesc(Array.from(argument), options) + &#x27;)&#x27;;
+		}
+		if (isArray(argument)) {
+			result = [];
+			options.wrap = true;
+			if (inline1) {
+				options.__inline1__ = false;
+				options.__inline2__ = true;
+			}
+			if (!inline2) {
+				increaseIndentation();
+			}
+			forEach(argument, function(value) {
+				isEmpty = false;
+				if (inline2) {
+					options.__inline2__ = false;
+				}
+				result.push(
+					(compact || inline2 ? &#x27;&#x27; : indent) +
+					jsesc(value, options)
+				);
+			});
+			if (isEmpty) {
+				return &#x27;[]&#x27;;
+			}
+			if (inline2) {
+				return &#x27;[&#x27; + result.join(&#x27;, &#x27;) + &#x27;]&#x27;;
+			}
+			return &#x27;[&#x27; + newLine + result.join(&#x27;,&#x27; + newLine) + newLine +
+				(compact ? &#x27;&#x27; : oldIndent) + &#x27;]&#x27;;
+		} else if (isNumber(argument)) {
+			if (json) {
+				// Some number values (e.g. `Infinity`) cannot be represented in JSON.
+				return JSON.stringify(argument);
+			}
+			if (useDecNumbers) {
+				return String(argument);
+			}
+			if (useHexNumbers) {
+				let hexadecimal = argument.toString(16);
+				if (!lowercaseHex) {
+					hexadecimal = hexadecimal.toUpperCase();
+				}
+				return &#x27;0x&#x27; + hexadecimal;
+			}
+			if (useBinNumbers) {
+				return &#x27;0b&#x27; + argument.toString(2);
+			}
+			if (useOctNumbers) {
+				return &#x27;0o&#x27; + argument.toString(8);
+			}
+		} else if (!isObject(argument)) {
+			if (json) {
+				// For some values (e.g. `undefined`, `function` objects),
+				// `JSON.stringify(value)` returns `undefined` (which isn’t valid
+				// JSON) instead of `&#x27;null&#x27;`.
+				return JSON.stringify(argument) || &#x27;null&#x27;;
+			}
+			return String(argument);
+		} else { // it’s an object
+			result = [];
+			options.wrap = true;
+			increaseIndentation();
+			forOwn(argument, function(key, value) {
+				isEmpty = false;
+				result.push(
+					(compact ? &#x27;&#x27; : indent) +
+					jsesc(key, options) + &#x27;:&#x27; +
+					(compact ? &#x27;&#x27; : &#x27; &#x27;) +
+					jsesc(value, options)
+				);
+			});
+			if (isEmpty) {
+				return &#x27;{}&#x27;;
+			}
+			return &#x27;{&#x27; + newLine + result.join(&#x27;,&#x27; + newLine) + newLine +
+				(compact ? &#x27;&#x27; : oldIndent) + &#x27;}&#x27;;
+		}
+	}
+
+	const string = argument;
+	// Loop over each code u ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.jsesc.toString" id="apidoc.element.jsesc.toString">
+        function <span class="apidocSignatureSpan">jsesc.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+				// Some number values (e.g. `Infinity`) cannot be represented in JSON.
+				return JSON.stringify(argument);
+			}
+			if (useDecNumbers) {
+				return String(argument);
+			}
+			if (useHexNumbers) {
+				let hexadecimal = argument.<span class="apidocCodeKeywordSpan">toString</span>(16);
+				if (!lowercaseHex) {
+					hexadecimal = hexadecimal.toUpperCase();
+				}
+				return &#x27;0x&#x27; + hexadecimal;
+			}
+			if (useBinNumbers) {
+				return &#x27;0b&#x27; + argument.toString(2);
+...</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
