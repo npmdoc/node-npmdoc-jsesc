@@ -72,15 +72,6 @@
 
         <li>
 
-            <a class="apidocElementLiA" href="#apidoc.element.jsesc.toString">
-            function <span class="apidocSignatureSpan">jsesc.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
-        <li>
-
             <span class="apidocSignatureSpan">string <span class="apidocSignatureSpan">jsesc.</span>version</span>
 
         </li>
@@ -264,37 +255,6 @@
 	const string = argument;
 	// Loop over each code u ...</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-
-    <h2>
-        <a href="#apidoc.element.jsesc.toString" id="apidoc.element.jsesc.toString">
-        function <span class="apidocSignatureSpan">jsesc.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">toString = function () {
-    return text;
-}</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-				// Some number values (e.g. `Infinity`) cannot be represented in JSON.
-				return JSON.stringify(argument);
-			}
-			if (useDecNumbers) {
-				return String(argument);
-			}
-			if (useHexNumbers) {
-				let hexadecimal = argument.<span class="apidocCodeKeywordSpan">toString</span>(16);
-				if (!lowercaseHex) {
-					hexadecimal = hexadecimal.toUpperCase();
-				}
-				return &#x27;0x&#x27; + hexadecimal;
-			}
-			if (useBinNumbers) {
-				return &#x27;0b&#x27; + argument.toString(2);
-...</pre></li>
     </ul>
 
 
