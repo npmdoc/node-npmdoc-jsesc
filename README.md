@@ -1,6 +1,6 @@
 # npmdoc-jsesc
 
-#### api documentation for  [jsesc (v2.5.0)](https://mths.be/jsesc)  [![npm package](https://img.shields.io/npm/v/npmdoc-jsesc.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-jsesc) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-jsesc.svg)](https://travis-ci.org/npmdoc/node-npmdoc-jsesc)
+#### basic api documentation for  [jsesc (v2.5.0)](https://mths.be/jsesc)  [![npm package](https://img.shields.io/npm/v/npmdoc-jsesc.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-jsesc) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-jsesc.svg)](https://travis-ci.org/npmdoc/node-npmdoc-jsesc)
 
 #### Given some data, jsesc returns the shortest possible stringified & ASCII-safe representation of that data.
 
